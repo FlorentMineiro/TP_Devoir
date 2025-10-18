@@ -21,10 +21,11 @@ public class DevoirController implements Initializable {
     private HashMap<String, ArrayList<Plat>> lesPlats;
     private HashMap<String,HashMap<String, ArrayList<Plat>>> lesCartes;
     Alert alert;
-    TreeItem racine;
-    ArrayList<Plat> entrees;
-    ArrayList<Plat> plats;
-    ArrayList<Plat> desserts;
+    TreeItem noeudCartes;
+
+
+
+
 
     @FXML
     private ListView lvCategories;
@@ -60,6 +61,7 @@ public class DevoirController implements Initializable {
         // A ne pas effacer
         lesPlats = new HashMap<>();
         lesCartes = new HashMap<>();
+        noeudCartes = new TreeItem<>(lvCartes.getSelectionModel().getSelectedItems());
         alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Choix incorrect");
         alert.setHeaderText("");
@@ -84,11 +86,11 @@ public class DevoirController implements Initializable {
 
         lvCartes.getItems().addAll("Carte d'hiver","Carte de printemps","Carte de noël");
         lvMenus.getItems().addAll("Menu BIO","Menu VIP","Menu enfant","Menu végétarien");
-        racine = new TreeItem<>(lvCartes);
+
 
 
         // A vous de jouer pour remplir le ListView avec les catégories
-        lvCategories.getItems().addAll("Dessert","Entrées","Plats");
+        lvCategories.getItems().addAll("Desserts","Entrées","Plats");
 
         alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Informations Manquantes");
@@ -99,7 +101,7 @@ public class DevoirController implements Initializable {
     {
         // A ne pas effacer
         // Entrées
-        entrees = new ArrayList<>();
+        ArrayList<Plat> entrees = new ArrayList<>();
         entrees.add(new Plat("Salade César", 5.50,"/Images/Image1.jpg"));
         entrees.add(new Plat("Soupe à l’oignon", 4.00,"/Images/Image2.jpg"));
         entrees.add(new Plat("Bruschetta", 3.80,"/Images/Image3.jpg"));
@@ -110,7 +112,7 @@ public class DevoirController implements Initializable {
         entrees.add(new Plat("Tapenade avec toasts", 3.50,"/Images/Image8.jpg"));
 
         // Plats principaux
-         plats = new ArrayList<>();
+        ArrayList<Plat> plats = new ArrayList<>();
         plats.add(new Plat("Steak frites", 12.50,"/Images/Image9.jpg"));
         plats.add(new Plat("Poulet rôti", 11.00,"/Images/Image10.jpg"));
         plats.add(new Plat("Lasagnes", 10.50,"/Images/Image11.jpg"));
@@ -121,7 +123,7 @@ public class DevoirController implements Initializable {
         plats.add(new Plat("Poisson grillé", 12.80,"/Images/Image16.jpg"));
 
         // Desserts
-        desserts = new ArrayList<>();
+        ArrayList<Plat> desserts = new ArrayList<>();
         desserts.add(new Plat("Tiramisu", 4.50,"/Images/Image17.jpg"));
         desserts.add(new Plat("Crème brûlée", 4.20,"/Images/Image18.jpg"));
         desserts.add(new Plat("Mousse au chocolat", 3.90,"/Images/Image19.jpg"));
@@ -136,37 +138,7 @@ public class DevoirController implements Initializable {
         lesPlats.put("Plats", plats);
         lesPlats.put("Desserts", desserts);
 
-        if (lvCategories.getSelectionModel().getSelectedItem() == "Entrées")
-        {
 
-            for (Plat entree : lesPlats.get("Entrées"))
-            {
-                tvPlats.getItems().add(entree);
-
-
-            }
-
-
-
-        }
-
-        if (lvCategories.getSelectionModel().getSelectedItem() == "Plats")
-        {
-            for (Plat lePlat : lesPlats.get("Plats"))
-            {
-                tvPlats.getItems().add(lePlat);
-
-            }
-        }
-
-        if (lvCategories.getSelectionModel().getSelectedItem() == "Desserts")
-        {
-            for (Plat dessert : lesPlats.get("Desserts"))
-            {
-                tvPlats.getItems().add(dessert);
-
-            }
-        }
 
     }
 
@@ -175,7 +147,31 @@ public class DevoirController implements Initializable {
         // A vous de jouer pour afficher les plats de la catégorie sélectionnée
 
 
-        downloadDatas();
+        if (lvCategories.getSelectionModel().getSelectedItem() == "Entrées")
+        {
+
+
+                tvPlats.getItems().clear();
+                tvPlats.getItems().addAll(lesPlats.get("Entrées"));
+
+
+        }
+
+        if (lvCategories.getSelectionModel().getSelectedItem() == "Plats")
+        {
+
+                tvPlats.getItems().clear();
+                tvPlats.getItems().addAll(lesPlats.get("Plats"));
+
+
+        }
+
+        if (lvCategories.getSelectionModel().getSelectedItem() == "Desserts")
+        {
+
+                tvPlats.getItems().clear();
+                tvPlats.getItems().addAll(lesPlats.get("Desserts"));
+        }
 
     }
 
@@ -185,76 +181,63 @@ public class DevoirController implements Initializable {
 
         // A vous de jouer pour vérfiier les infos et remplir la HashMap "lesCartes"
 
-        if (lesPlats.get("Entrees") == null)
+        if (tvPlats.getSelectionModel().getSelectedItem() == null)
         {
-            alert.setHeaderText("Veuillez Choisir une entrées");
-            alert.showAndWait();
-        } else if (lesPlats.get("Plats") == null) {
             alert.setHeaderText("Veuillez Choisir un Plat");
             alert.showAndWait();
-        }else if (lesPlats.get("Desserts") == null) {
-            alert.setHeaderText("Veuillez Choisir un dessert");
+        } else if (lvCartes.getSelectionModel().getSelectedItem()==null) {
+            alert.setHeaderText("Veuillez Choisir une Carte");
             alert.showAndWait();
-        } else if (lesPlats.size() == 3) {
+        } else if (lvMenus.getSelectionModel().getSelectedItem() == null) {
+            alert.setHeaderText("Veuillez Choisir un Menu");
+            alert.showAndWait();
+        } else if (tvPlats.getSelectionModel().getSelectedItems().size() >= 3) {
+            alert.setHeaderText("Il faut 3 plats maximum");
+            alert.showAndWait();
+        } else {
+            String cartePrises = lvCartes.getSelectionModel().getSelectedItem().toString();
+            String menuPris = lvMenus.getSelectionModel().getSelectedItem().toString();
+
+
+            Plat unPlat = new Plat(tcNomPlat.getCellFactory().toString(),Double.parseDouble(String.valueOf(tvPlats.getSelectionModel().getSelectedItem())),"Image/");
+
+            if (!lesCartes.containsKey(cartePrises))
+            {
+                lesCartes.put(cartePrises,new HashMap<>());
+            }
+            if (!lesCartes.get(cartePrises).containsKey(menuPris))
+            {
+                lesCartes.get(cartePrises).put(menuPris,new ArrayList<>());
+            }
+            lesCartes.get(cartePrises).get(menuPris).add(unPlat);
+
+            afficherLesCartes();
+
+        }
+        /*else if (lesPlats.size() == 3) {
             alert.setHeaderText("Il faut 3 plats");
             alert.showAndWait();
-        }
+        }*/
     }
 
     public void afficherLesCartes()
     {
         // A vous de jouer pour afficher les données dans le TreeView
 
-       String cartePrises = lvCartes.getSelectionModel().getSelectedItem().toString();
-        String menuPris = lvMenus.getSelectionModel().getSelectedItem().toString();
-
-
-        Plat unPlat = new Plat(tcNomPlat.toString(),Double.parseDouble(String.valueOf(tcPrixPlat.getCellValueFactory())),"Image/");
-
-        if (!lesCartes.containsKey(cartePrises))
-        {
-            lesCartes.put(cartePrises,new HashMap<>());
-        }
-        if (!lesCartes.get(cartePrises).containsKey(menuPris))
-        {
-            lesCartes.get(cartePrises).put(menuPris,new ArrayList<>());
-        }
-        lesCartes.get(cartePrises).get(menuPris).add(unPlat);
-
-        ajoutCommande();
-
-
-
-    }
-
-    public void ajoutCommande()
-    {
-        racine.getChildren().clear();
-
-        TreeItem noeudCartes;
         TreeItem noeudMenu;
         TreeItem noeudPlat;
 
+        noeudCartes.getChildren().clear();
         for(String nomCartes : lesCartes.keySet())
         {
             noeudCartes = new TreeItem(nomCartes);
-            for(String nomMenu : lesCartes.get(nomCartes).keySet())
-            {
-                noeudMenu = new TreeItem(nomMenu);
 
-                for(Plat lePlat : lesCartes.get(nomCartes).get(nomMenu))
-                {
-                    noeudPlat = new TreeItem();
-                    noeudMenu.getChildren().add(noeudPlat);
-                    noeudPlat.setExpanded(true);
-                }
-                noeudCartes.getChildren().add(noeudMenu);
-                noeudCartes.setExpanded(true);
-            }
-            racine.getChildren().add(noeudCartes);
+
+            tvCartes.setRoot(noeudCartes);
         }
-        tvCartes.setRoot(racine);
+
     }
+
 
 
     @FXML
