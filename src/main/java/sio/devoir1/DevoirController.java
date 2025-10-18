@@ -22,6 +22,8 @@ public class DevoirController implements Initializable {
     private HashMap<String,HashMap<String, ArrayList<Plat>>> lesCartes;
     Alert alert;
     TreeItem noeudCartes;
+    String menuPris;
+    String cartePrises;
 
 
 
@@ -191,15 +193,12 @@ public class DevoirController implements Initializable {
         } else if (lvMenus.getSelectionModel().getSelectedItem() == null) {
             alert.setHeaderText("Veuillez Choisir un Menu");
             alert.showAndWait();
-        } else if (tvPlats.getSelectionModel().getSelectedItems().size() >= 3) {
-            alert.setHeaderText("Il faut 3 plats maximum");
-            alert.showAndWait();
-        } else {
-            String cartePrises = lvCartes.getSelectionModel().getSelectedItem().toString();
-            String menuPris = lvMenus.getSelectionModel().getSelectedItem().toString();
+        }  else {
+           cartePrises = lvCartes.getSelectionModel().getSelectedItem().toString();
+             menuPris = lvMenus.getSelectionModel().getSelectedItem().toString();
 
 
-            //Je ne comprends pas comment corriger l'erreur pour le prix de l'objet appartenant à la classe plat?
+
             Plat unPlat = new Plat(tvPlats.getSelectionModel().getSelectedItem().getNom(),tvPlats.getSelectionModel().getSelectedItem().getPrix(),tvPlats.getSelectionModel().getSelectedItem().getPhoto());
 
             if (!lesCartes.containsKey(cartePrises))
@@ -215,10 +214,7 @@ public class DevoirController implements Initializable {
             afficherLesCartes();
 
         }
-        /*else if (lesPlats.size() == 3) {
-            alert.setHeaderText("Il faut 3 plats");
-            alert.showAndWait();
-        }*/
+
     }
 
     public void afficherLesCartes()
@@ -229,18 +225,32 @@ public class DevoirController implements Initializable {
         TreeItem noeudPlat;
 
         noeudCartes.getChildren().clear();
+
+
         for(String nomCartes : lesCartes.keySet())
         {
             noeudCartes = new TreeItem(nomCartes);
             for(String nomMenu : lesCartes.get(nomCartes).keySet())
             {
                 noeudMenu = new TreeItem<>(nomMenu);
-                for (Plat nomPlat : lesCartes.get(nomCartes).get(nomMenu))
-                {
-                    noeudPlat = new TreeItem<>(nomPlat);
-                    noeudMenu.getChildren().add(noeudPlat);
-                    noeudMenu.setExpanded(true);
-                }
+
+                    for (Plat nomPlat : lesCartes.get(nomCartes).get(nomMenu)) {
+                        if (lesCartes.get(nomCartes).get(nomMenu).size() > 3 )
+                        {
+                            alert.setHeaderText("Il faut 3 plats maximum");
+                            alert.showAndWait();
+                            lesCartes.get(nomCartes).get(nomMenu).remove(nomPlat);
+                        }
+                        String lesPlats = nomPlat.getNom() + " - " + nomPlat.getPrix();
+                        noeudPlat = new TreeItem<>(lesPlats);
+                        noeudMenu.getChildren().add(noeudPlat);
+                        noeudMenu.setExpanded(true);
+                        //j'arrive pas à limiter correctement à 3
+
+
+                    }
+
+
                 noeudCartes.getChildren().add(noeudMenu);
                 noeudCartes.setExpanded(true);
             }
