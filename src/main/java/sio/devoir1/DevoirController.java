@@ -198,8 +198,9 @@ public class DevoirController implements Initializable {
             String cartePrises = lvCartes.getSelectionModel().getSelectedItem().toString();
             String menuPris = lvMenus.getSelectionModel().getSelectedItem().toString();
 
+
             //Je ne comprends pas comment corriger l'erreur pour le prix de l'objet appartenant à la classe plat?
-            Plat unPlat = new Plat(tcNomPlat.getCellFactory().toString(),Double.parseDouble(String.valueOf(tvPlats.getSelectionModel().getSelectedItem())),"Image/");
+            Plat unPlat = new Plat(tvPlats.getSelectionModel().getSelectedItem().getNom(),tvPlats.getSelectionModel().getSelectedItem().getPrix(),tvPlats.getSelectionModel().getSelectedItem().getPhoto());
 
             if (!lesCartes.containsKey(cartePrises))
             {
@@ -231,6 +232,18 @@ public class DevoirController implements Initializable {
         for(String nomCartes : lesCartes.keySet())
         {
             noeudCartes = new TreeItem(nomCartes);
+            for(String nomMenu : lesCartes.get(nomCartes).keySet())
+            {
+                noeudMenu = new TreeItem<>(nomMenu);
+                for (Plat nomPlat : lesCartes.get(nomCartes).get(nomMenu))
+                {
+                    noeudPlat = new TreeItem<>(nomPlat);
+                    noeudMenu.getChildren().add(noeudPlat);
+                    noeudMenu.setExpanded(true);
+                }
+                noeudCartes.getChildren().add(noeudMenu);
+                noeudCartes.setExpanded(true);
+            }
 
 
             tvCartes.setRoot(noeudCartes);
