@@ -198,7 +198,7 @@ public class DevoirController implements Initializable {
             String cartePrises = lvCartes.getSelectionModel().getSelectedItem().toString();
             String menuPris = lvMenus.getSelectionModel().getSelectedItem().toString();
 
-
+            //Je ne comprends pas comment corriger l'erreur pour le prix de l'objet appartenant à la classe plat?
             Plat unPlat = new Plat(tcNomPlat.getCellFactory().toString(),Double.parseDouble(String.valueOf(tvPlats.getSelectionModel().getSelectedItem())),"Image/");
 
             if (!lesCartes.containsKey(cartePrises))
