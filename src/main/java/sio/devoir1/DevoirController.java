@@ -19,6 +19,7 @@ public class DevoirController implements Initializable {
     private HashMap<String,HashMap<String, ArrayList<Plat>>> lesCartes;
     Alert alert;
     TreeItem noeudCartes;
+    TreeItem racine;
     String menuPris;
     String cartePrises;
     Plat unPlat;
@@ -61,7 +62,11 @@ public class DevoirController implements Initializable {
         // A ne pas effacer
         lesPlats = new HashMap<>();
         lesCartes = new HashMap<>();
+
+
         noeudCartes = new TreeItem<>(lvCartes.getSelectionModel().getSelectedItems());
+        racine = new TreeItem<>();
+
         alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Choix incorrect");
         alert.setHeaderText("");
@@ -237,7 +242,10 @@ public class DevoirController implements Initializable {
         TreeItem noeudMenu;
         TreeItem noeudPlat;
 
-        noeudCartes.getChildren().clear();
+
+
+        racine.setExpanded(true);
+
 
 
         for(String nomCartes : lesCartes.keySet())
@@ -264,10 +272,14 @@ public class DevoirController implements Initializable {
 
                 noeudCartes.getChildren().add(noeudMenu);
                 noeudCartes.setExpanded(true);
+
+
+
             }
+            racine.getChildren().add(noeudCartes);
+            tvCartes.setRoot(racine);
+            tvCartes.setShowRoot(false);
 
-
-            tvCartes.setRoot(noeudCartes);
         }
 
     }
@@ -291,7 +303,7 @@ public class DevoirController implements Initializable {
                 cartePrises = lvCartes.getSelectionModel().getSelectedItem().toString();
                 menuPris = lvMenus.getSelectionModel().getSelectedItem().toString();
 
-                String parentCarte = noeudClique.getParent().getValue().toString();
+
 
                  List<Plat> photoPlat = lesCartes.get(cartePrises).get(menuPris);
 
@@ -306,6 +318,24 @@ public class DevoirController implements Initializable {
                     }
 
 
+            }
+            if(noeudClique.getChildren().size()==0)
+            {
+                String parentCarte = noeudClique.getParent().getParent().getValue().toString();
+                String parentMenu = noeudClique.getParent().getValue().toString();
+                TreeItem noeudMenuPlatSupp = new TreeItem<>(lvMenus.getSelectionModel().getSelectedItem().toString());
+
+
+                for(Plat suppPlat : lesCartes.get(parentCarte).get(parentMenu))
+                {
+
+                    if(suppPlat.getNom().equals(noeudClique.getValue().toString().split("-")[0])
+                    && suppPlat.getNom().equals(noeudClique.getValue().toString().split("-")[1]))
+                    {
+                        noeudMenuPlatSupp.getChildren().remove(new TreeItem<>(suppPlat.getNom()+" - "+suppPlat.getPrix()));
+                    }
+                }
+                afficherLesCartes();
             }
         }
 
