@@ -11,10 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import sio.devoir1.models.Plat;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class DevoirController implements Initializable {
 
@@ -24,6 +21,7 @@ public class DevoirController implements Initializable {
     TreeItem noeudCartes;
     String menuPris;
     String cartePrises;
+    Plat unPlat;
 
 
 
@@ -148,8 +146,12 @@ public class DevoirController implements Initializable {
     public void lvCategoriesClicked(Event event) {
         // A vous de jouer pour afficher les plats de la catégorie sélectionnée
 
+        //Méthode qui simplifie la vie
+        tvPlats.setItems(FXCollections.observableList
+                (lesPlats.get(lvCategories.getSelectionModel().getSelectedItem())));
 
-        if (lvCategories.getSelectionModel().getSelectedItem() == "Entrées")
+        //Méthode Relou
+        /*if (lvCategories.getSelectionModel().getSelectedItem() == "Entrées")
         {
 
 
@@ -173,7 +175,7 @@ public class DevoirController implements Initializable {
 
                 tvPlats.getItems().clear();
                 tvPlats.getItems().addAll(lesPlats.get("Desserts"));
-        }
+        }*/
 
     }
 
@@ -199,7 +201,9 @@ public class DevoirController implements Initializable {
 
 
 
-            Plat unPlat = new Plat(tvPlats.getSelectionModel().getSelectedItem().getNom(),tvPlats.getSelectionModel().getSelectedItem().getPrix(),tvPlats.getSelectionModel().getSelectedItem().getPhoto());
+            unPlat = new Plat(tvPlats.getSelectionModel().getSelectedItem().getNom()
+                    ,tvPlats.getSelectionModel().getSelectedItem().getPrix()
+                    ,tvPlats.getSelectionModel().getSelectedItem().getPhoto());
 
             if (!lesCartes.containsKey(cartePrises))
             {
@@ -209,9 +213,18 @@ public class DevoirController implements Initializable {
             {
                 lesCartes.get(cartePrises).put(menuPris,new ArrayList<>());
             }
-            lesCartes.get(cartePrises).get(menuPris).add(unPlat);
 
-            afficherLesCartes();
+            if (lesCartes.get(cartePrises).get(menuPris).size() > 2 )
+            {
+                alert.setHeaderText("Il faut 3 plats maximum");
+                alert.showAndWait();
+
+            }else {
+                lesCartes.get(cartePrises).get(menuPris).add(unPlat);
+                afficherLesCartes();
+            }
+
+
 
         }
 
@@ -234,18 +247,16 @@ public class DevoirController implements Initializable {
             {
                 noeudMenu = new TreeItem<>(nomMenu);
 
+
+
                     for (Plat nomPlat : lesCartes.get(nomCartes).get(nomMenu)) {
-                        if (lesCartes.get(nomCartes).get(nomMenu).size() > 3 )
-                        {
-                            alert.setHeaderText("Il faut 3 plats maximum");
-                            alert.showAndWait();
-                            lesCartes.get(nomCartes).get(nomMenu).remove(nomPlat);
-                        }
+
                         String lesPlats = nomPlat.getNom() + " - " + nomPlat.getPrix();
                         noeudPlat = new TreeItem<>(lesPlats);
                         noeudMenu.getChildren().add(noeudPlat);
                         noeudMenu.setExpanded(true);
-                        //j'arrive pas à limiter correctement à 3
+
+
 
 
                     }
@@ -272,6 +283,31 @@ public class DevoirController implements Initializable {
         img3.setImage(null);
 
         // A vous de jouer pour gérer les différents cas lors d'un clique sur le TreeView
+        TreeItem noeudClique = (TreeItem) tvCartes.getSelectionModel().getSelectedItem() ;
+        if (!(noeudClique == null))
+        {
+            if(noeudClique.getChildren().size()==1)
+            {
+                cartePrises = lvCartes.getSelectionModel().getSelectedItem().toString();
+                menuPris = lvMenus.getSelectionModel().getSelectedItem().toString();
+
+                String parentCarte = noeudClique.getParent().getValue().toString();
+
+                 List<Plat> photoPlat = lesCartes.get(cartePrises).get(menuPris);
+
+
+
+
+                    if(!(photoPlat == null) && photoPlat.size()==3)
+                    {
+                        img1.setImage(new Image(photoPlat.get(0).getPhoto()));
+                        img2.setImage(new Image(photoPlat.get(1).getPhoto()));
+                        img3.setImage(new Image(photoPlat.get(2).getPhoto()));
+                    }
+
+
+            }
+        }
 
     }
 }
