@@ -297,7 +297,7 @@ public class DevoirController implements Initializable {
 
 
 
-
+                    //Ici je pense avoir fait les choses correctement mais ne sait pas pourquoi les images ne s'affiche pas
                     if(!(photoPlat == null) && photoPlat.size()==3)
                     {
                         img1.setImage(new Image(photoPlat.get(0).getPhoto()));
