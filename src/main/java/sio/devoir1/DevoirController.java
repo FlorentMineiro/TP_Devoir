@@ -306,7 +306,7 @@ public class DevoirController implements Initializable {
 
 
 
-                    List<Plat> photoPlat = lesCartes.get(cartePrises).get(menuPris);
+                    ArrayList<Plat> photoPlat = lesCartes.get(cartePrises).get(menuPris);
 
 
 
@@ -321,12 +321,13 @@ public class DevoirController implements Initializable {
                 }
 
 
-
+            //Je ne comprends pas pourquoi ça ne marche pas ?
             if(noeudClique.getChildren().size()==0)
             {
                 String parentCarte = noeudClique.getParent().getParent().getValue().toString();
                 String parentMenu = noeudClique.getParent().getValue().toString();
-                TreeItem noeudMenuPlatSupp = new TreeItem<>(lvMenus.getSelectionModel().getSelectedItem().toString());
+                String parentRacine = noeudClique.getParent().getParent().getParent().getValue().toString();
+                TreeItem noeudMenuPlatSupp = new TreeItem<>(tvCartes.getSelectionModel().getSelectedItem().toString());
 
 
                 for(Plat suppPlat : lesCartes.get(parentCarte).get(parentMenu))
