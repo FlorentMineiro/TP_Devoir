@@ -65,7 +65,7 @@ public class DevoirController implements Initializable {
 
 
         noeudCartes = new TreeItem<>(lvCartes.getSelectionModel().getSelectedItems());
-        racine = new TreeItem<>();
+        racine = new TreeItem<>("");
 
         alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Choix incorrect");
@@ -243,7 +243,7 @@ public class DevoirController implements Initializable {
         TreeItem noeudPlat;
 
 
-
+        racine.getChildren().clear();
         racine.setExpanded(true);
 
 
@@ -296,29 +296,32 @@ public class DevoirController implements Initializable {
 
         // A vous de jouer pour gérer les différents cas lors d'un clique sur le TreeView
         TreeItem noeudClique = (TreeItem) tvCartes.getSelectionModel().getSelectedItem() ;
-        if (!(noeudClique == null))
+        if (!(noeudClique == null) && !(noeudClique.getParent()==null) && !(noeudClique.getParent().getParent()==null))
         {
-            if(noeudClique.getChildren().size()==1)
-            {
-                cartePrises = lvCartes.getSelectionModel().getSelectedItem().toString();
-                menuPris = lvMenus.getSelectionModel().getSelectedItem().toString();
+                Boolean estMenu = noeudClique.getParent().getParent().getValue().equals("");
+                if(estMenu)
+                {
+                    cartePrises = lvCartes.getSelectionModel().getSelectedItem().toString();
+                    menuPris = lvMenus.getSelectionModel().getSelectedItem().toString();
 
 
 
-                 List<Plat> photoPlat = lesCartes.get(cartePrises).get(menuPris);
+                    List<Plat> photoPlat = lesCartes.get(cartePrises).get(menuPris);
 
 
 
-                    //Ici je pense avoir fait les choses correctement mais ne sait pas pourquoi les images ne s'affiche pas
+
                     if(!(photoPlat == null) && photoPlat.size()==3)
                     {
-                        img1.setImage(new Image(photoPlat.get(0).getPhoto()));
-                        img2.setImage(new Image(photoPlat.get(1).getPhoto()));
-                        img3.setImage(new Image(photoPlat.get(2).getPhoto()));
+                        img1.setImage(new Image(getClass().getResourceAsStream(photoPlat.get(0).getPhoto())));
+                        img2.setImage(new Image(getClass().getResourceAsStream(photoPlat.get(1).getPhoto())));
+                        img3.setImage(new Image(getClass().getResourceAsStream(photoPlat.get(2).getPhoto())));
                     }
 
+                }
 
-            }
+
+
             if(noeudClique.getChildren().size()==0)
             {
                 String parentCarte = noeudClique.getParent().getParent().getValue().toString();
