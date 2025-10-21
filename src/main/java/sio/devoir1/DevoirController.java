@@ -311,7 +311,7 @@ public class DevoirController implements Initializable {
 
 
 
-                    if(!(photoPlat == null) && photoPlat.size()==3)
+                    if(photoPlat.size()==3)
                     {
                         img1.setImage(new Image(getClass().getResourceAsStream(photoPlat.get(0).getPhoto())));
                         img2.setImage(new Image(getClass().getResourceAsStream(photoPlat.get(1).getPhoto())));
